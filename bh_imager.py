@@ -86,7 +86,7 @@ class bh_imager:
     def learner(self):
         
         learner = Learner2D(self.find_r, bounds=[self.x_lim, self.y_lim])
-        runner = BlockingRunner(learner, goal=lambda l: l.loss() < 0.01)
+        runner = BlockingRunner(learner, goal=lambda l: l.loss() < 0.1)
         
         return learner
 #%%
