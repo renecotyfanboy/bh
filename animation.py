@@ -22,7 +22,7 @@ import animatplot as amp
 images = []
 
 for i in tqdm(np.arange(0,361,1)):
-    bh = BH_imager(angle=i,disk_size=(3,7),n_points=180)
+    bh = BH_imager(angle=i,disk_size=(3,7),n_points=10)
     images.append(bh.compute_img())
     
 block = amp.blocks.Imshow(images,cmap=cm.hot,origin='lower')
