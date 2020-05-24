@@ -209,18 +209,11 @@ def f(Z):
 
     return Z_dot
 
-
-
 def calc_r_p(i, alpha, b):
 
     u_c = 3 * 3 ** 0.5 / 2 / b
     Y0 = np.zeros((2,))
     Y0[1] = u_c * 2 / (3 * 3 ** 0.5)
-    
-    if (i==0 or i==np.pi) and (np.abs(np.sin(alpha))<1e-2):
-        
-        return b
-        
     theta_f = theta_d_p(i%np.pi, alpha)
     Y = ode87(Y0, theta_f)
     
@@ -269,7 +262,6 @@ def redshift(r, i, alpha, b):
             * (3 / (2 * r)) ** (3 / 2)
         )
     )
-
 
 def ode87(Y, theta_max, n_points=10):
 
@@ -331,9 +323,7 @@ def ode87(Y, theta_max, n_points=10):
 
     return Y
 
-
 jit_module(nopython=True, error_model="numpy",cache=True)
-
 
 @vectorize([float64(float64, float64, float64)], target="parallel",cache=True)
 def rp_map(i, alpha, b):
@@ -363,15 +353,19 @@ def rn_map(i, alpha, b):
     cache=True)
 def r_map(r_min, r_max, i, alpha, b):
 
+    if (i==0 or i==np.pi) and (np.abs(b*np.sin(alpha))<0.03) and (b<=r_max):
+        
+        return r_max
+
     R_p = calc_r_p(i, alpha, b)
 
-    if R_p > r_min and R_p < r_max:
+    if R_p >= r_min and R_p <= r_max:
 
         return R_p
 
     R_s = calc_r_s(i, alpha, b)
 
-    if R_s > r_min and R_s < r_max:
+    if R_s >= r_min and R_s <= r_max:
 
         return R_s
 
@@ -384,7 +378,7 @@ def r_map(r_min, r_max, i, alpha, b):
 )
 def img_value(r, r_min, r_max, inclinaison, alpha, b):
 
-    if r > r_min and r < r_max:
+    if r >= r_min and r <= r_max:
 
         return flux(r) / (redshift(r, inclinaison, alpha, b)) ** 4
 
@@ -400,7 +394,7 @@ def img_value(r, r_min, r_max, inclinaison, alpha, b):
 )
 def red_value(r, r_min, r_max, inclinaison, alpha, b):
 
-    if r > r_min and r < r_max:
+    if r >= r_min and r <= r_max:
 
         return redshift(r, inclinaison, alpha, b) - 1
 

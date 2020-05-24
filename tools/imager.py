@@ -11,11 +11,11 @@ class BH_imager:
         self.i = (angle * np.pi / 180)%(2*np.pi)
         self.rlim = disk_size
 
-        self.x = np.linspace(-disk_size[1], disk_size[1], n_points)
-        self.y = np.linspace(-disk_size[1], disk_size[1], n_points)
+        self.x = np.linspace(-10, 10, n_points)
+        self.y = np.linspace(-10, 10, n_points)
 
         X, Y = np.meshgrid(self.x, self.y)
-        self.alpha = np.angle(X + 1j * Y)
+        self.alpha = np.arctan2(Y,X)
         self.b = np.abs(X + 1j * Y)
 
         self.R_map = r_map(self.rlim[0], self.rlim[1], self.i, self.alpha, self.b)
