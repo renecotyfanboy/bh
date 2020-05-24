@@ -177,23 +177,29 @@ b_7 = np.array(
 
 
 def theta_d_p(i, alpha):
-
-    return np.arccos(
+    
+    if i==0 and alpha==0:
+        return np.pi
+    
+    else:
+        return np.arccos(
         -np.sin(alpha) * np.cos(i) / np.sqrt(1 - np.cos(alpha) ** 2 * np.cos(i) ** 2)
     )
 
 
 def theta_d_s(i, alpha):
 
-    return (
-        np.arccos(
-            -np.sin(alpha)
-            * np.cos(i)
-            / np.sqrt(1 - np.cos(alpha) ** 2 * np.cos(i) ** 2)
+    if i==0 and alpha==0:
+        return 2*np.pi
+    else:
+        return (
+            np.arccos(
+                -np.sin(alpha)
+                * np.cos(i)
+                / np.sqrt(1 - np.cos(alpha) ** 2 * np.cos(i) ** 2)
+            )
+            + np.pi
         )
-        + np.pi
-    )
-
 
 def f(Z):
 
@@ -203,25 +209,17 @@ def f(Z):
 
     return Z_dot
 
+def calc_r_0(alpha,b):
+
+    u_c = 3 * 3 ** 0.5 / 2 / b
+    Y0 = np.zeros((2,))
+    Y0[1] = u_c * 2 / (3 * 3 ** 0.5)
+    theta_f = np.pi*(-np.sign(alpha))
+    Y = ode87(Y0, theta_f)
+
+    return 1 / Y[0]    
 
 def calc_r_p(i, alpha, b):
-    """
-    Unvectorized computation for the primary image radius
-
-    Parameters
-    ----------
-    i : float
-        Observer angle in radian
-    alpha : float
-        Angle of the pixel
-    b : float
-        Radius of the pixel
-
-    Returns
-    -------
-    r_p : float
-        Disk radius observed on the pixel
-    """
 
     u_c = 3 * 3 ** 0.5 / 2 / b
     Y0 = np.zeros((2,))
@@ -369,20 +367,22 @@ def rn_map(i, alpha, b):
     target="parallel",
     cache=True)
 def r_map(r_min, r_max, i, alpha, b):
-
-    R_p = calc_r_p(i, alpha, b)
-
-    if R_p > r_min and R_p < r_max:
-
-        return R_p
-
-    R_s = calc_r_s(i, alpha, b)
-
-    if R_s > r_min and R_s < r_max:
-
-        return R_s
-
-    return 0
+    if i == 0:
+        return calc_r_0(alpha,b)
+    else:
+        R_p = calc_r_p(i, alpha, b)
+    
+        if R_p > r_min and R_p < r_max:
+    
+            return R_p
+    
+        R_s = calc_r_s(i, alpha, b)
+    
+        if R_s > r_min and R_s < r_max:
+    
+            return R_s
+    
+        return 0
 
 @vectorize(
     [float64(float64, float64, float64, float64, float64, float64)],

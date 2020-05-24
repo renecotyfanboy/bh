@@ -1,24 +1,18 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Sun May 24 00:16:10 2020
-
-@author: simon
+Imager class wrapping various computations
 """
 
 import numpy as np
 from tools.functions import red_value, img_value, r_map, rp_map, rs_map,rn_map
 
 class BH_imager:
-    def __init__(self, angle, disk_size):
+    def __init__(self, angle=30, disk_size=(3,15),n_points=180):
 
         self.i = angle * np.pi / 180
         self.rlim = disk_size
 
-        self.n_points = 180
-
-        self.x = np.linspace(-16, 16, int(self.n_points * 16 / 9))
-        self.y = np.linspace(-9, 9, self.n_points)
+        self.x = np.linspace(-disk_size[1], disk_size[1], n_points)
+        self.y = np.linspace(-disk_size[1], disk_size[1], n_points)
 
         X, Y = np.meshgrid(self.x, self.y)
         self.alpha = np.angle(X + 1j * Y)
