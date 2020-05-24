@@ -8,7 +8,7 @@ from tools.functions import red_value, img_value, r_map, rp_map, rs_map,rn_map
 class BH_imager:
     def __init__(self, angle=30, disk_size=(3,15),n_points=180):
 
-        self.i = angle * np.pi / 180
+        self.i = (angle * np.pi / 180)%(2*np.pi)
         self.rlim = disk_size
 
         self.x = np.linspace(-disk_size[1], disk_size[1], n_points)

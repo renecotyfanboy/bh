@@ -21,7 +21,7 @@ import animatplot as amp
     
 images = []
 
-for i in tqdm(np.arange(-3,3,1)):
+for i in tqdm(np.arange(0,361,1)):
     bh = BH_imager(angle=i,disk_size=(3,7),n_points=180)
     images.append(bh.compute_img())
     
@@ -29,5 +29,5 @@ block = amp.blocks.Imshow(images,cmap=cm.hot,origin='lower')
 anim = amp.Animation([block])
 
 anim.controls()
-#anim.save_gif('ising')
+anim.save_gif('ising')
 plt.show()

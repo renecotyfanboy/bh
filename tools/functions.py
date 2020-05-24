@@ -178,7 +178,7 @@ b_7 = np.array(
 
 def theta_d_p(i, alpha):
     
-    if i==0 and alpha==0:
+    if i==0 or i ==np.pi:
         return np.pi
     
     else:
@@ -189,7 +189,7 @@ def theta_d_p(i, alpha):
 
 def theta_d_s(i, alpha):
 
-    if i==0 and alpha==0:
+    if i==0 or i ==np.pi:
         return 2*np.pi
     else:
         return (
@@ -209,37 +209,32 @@ def f(Z):
 
     return Z_dot
 
-def calc_r_0(alpha,b):
 
-    u_c = 3 * 3 ** 0.5 / 2 / b
-    Y0 = np.zeros((2,))
-    Y0[1] = u_c * 2 / (3 * 3 ** 0.5)
-    theta_f = np.pi*(-np.sign(alpha))
-    Y = ode87(Y0, theta_f)
-
-    return 1 / Y[0]    
 
 def calc_r_p(i, alpha, b):
 
     u_c = 3 * 3 ** 0.5 / 2 / b
     Y0 = np.zeros((2,))
     Y0[1] = u_c * 2 / (3 * 3 ** 0.5)
-    theta_f = theta_d_p(i, alpha)
+    
+    if (i==0 or i==np.pi) and (np.abs(np.sin(alpha))<1e-2):
+        
+        return b
+        
+    theta_f = theta_d_p(i%np.pi, alpha)
     Y = ode87(Y0, theta_f)
-
+    
     return 1 / Y[0]
-
 
 def calc_r_s(i, alpha, b):
 
     u_c = 3 * 3 ** 0.5 / 2 / b
     Y0 = np.zeros((2,))
     Y0[1] = u_c * 2 / (3 * 3 ** 0.5)
-    theta_f = theta_d_s(i, alpha)
+    theta_f = theta_d_s(i%np.pi, alpha)
     Y = ode87(Y0, theta_f)
 
     return 1 / Y[0]
-
 
 def flux(r):
 
@@ -367,22 +362,20 @@ def rn_map(i, alpha, b):
     target="parallel",
     cache=True)
 def r_map(r_min, r_max, i, alpha, b):
-    if i == 0:
-        return calc_r_0(alpha,b)
-    else:
-        R_p = calc_r_p(i, alpha, b)
-    
-        if R_p > r_min and R_p < r_max:
-    
-            return R_p
-    
-        R_s = calc_r_s(i, alpha, b)
-    
-        if R_s > r_min and R_s < r_max:
-    
-            return R_s
-    
-        return 0
+
+    R_p = calc_r_p(i, alpha, b)
+
+    if R_p > r_min and R_p < r_max:
+
+        return R_p
+
+    R_s = calc_r_s(i, alpha, b)
+
+    if R_s > r_min and R_s < r_max:
+
+        return R_s
+
+    return 0
 
 @vectorize(
     [float64(float64, float64, float64, float64, float64, float64)],
