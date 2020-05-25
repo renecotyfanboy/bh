@@ -6,13 +6,13 @@ import numpy as np
 from tools.functions import red_value, img_value, r_map, rp_map, rs_map,rn_map
 
 class BH_imager:
-    def __init__(self, angle=30, disk_size=(3,15),n_points=180):
+    def __init__(self, angle=30, disk_size=(3,15),xlim=(-24,24),ylim=(-13.5,13.5),pixel_size=0.025):
 
         self.i = (angle * np.pi / 180)%(2*np.pi)
         self.rlim = disk_size
 
-        self.x = np.linspace(-10, 10, n_points)
-        self.y = np.linspace(-10, 10, n_points)
+        self.x = np.linspace(xlim[0], xlim[1], int((xlim[1]-xlim[0])/pixel_size))
+        self.y = np.linspace(ylim[0], ylim[1], int((ylim[1]-ylim[0])/pixel_size))
 
         X, Y = np.meshgrid(self.x, self.y)
         self.alpha = np.arctan2(Y,X)

@@ -18,7 +18,7 @@ from tools.imager import BH_imager
 import animatplot as amp
 
 #with tempfile.TemporaryDirectory() as tmpdirname:
-bh = BH_imager(angle=10,disk_size=(3,7),n_points=900)
+bh = BH_imager(angle=10,pixel_size=0.0125)
 img = bh.compute_img()
 
 plt.imshow(img,cmap=cm.hot,origin='lower')
