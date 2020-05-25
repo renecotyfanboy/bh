@@ -21,5 +21,7 @@ import animatplot as amp
 bh = BH_imager(angle=10,pixel_size=0.0125)
 img = bh.compute_img()
 
-plt.imshow(img,cmap=cm.hot,origin='lower')
-plt.axis('off')
+np.savetxt('img.txt',img)
+
+# plt.imshow(img,cmap=cm.hot,origin='lower')
+# plt.axis('off')
